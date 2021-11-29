@@ -6,7 +6,7 @@ AWS boilerplate code for python applications.
 ## install
 
 Install latest package
-`pip install -no-deps pytargetingutilities`
+`pip install pytargetingutilities`
 
 Copy latest package to workspace:
 `pip download --no-deps pytargetingutilities`
