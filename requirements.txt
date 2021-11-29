@@ -1,0 +1,7 @@
+boto3
+botocore
+jmespath==0.10.0
+python-dateutil==2.8.1
+s3transfer
+cryptography
+graypy

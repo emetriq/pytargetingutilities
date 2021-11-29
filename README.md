@@ -1,2 +1,13 @@
+[![Release Build](https://github.com/emetriq/pytargetingutilities/actions/workflows/release.yaml/badge.svg)](https://github.com/emetriq/pytargetingutilities/actions/workflows/release.yaml)
 # pytargetingutilities
-Base lib for aws operations and more
+
+AWS boilerplate code for python applications.
+
+## install
+
+Install latest package
+`pip install -no-deps pytargetingutilities`
+
+Copy latest package to workspace:
+`pip download --no-deps pytargetingutilities`
+
