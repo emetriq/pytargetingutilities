@@ -1,6 +1,6 @@
 import json
 import os
-import tempfile
+from tempfile import NamedTemporaryFile as tmp
 
 import boto3
 from botocore.exceptions import ClientError
@@ -11,9 +11,13 @@ from pytargetingutilities.tools.hash import md5, md5_str
 
 class S3Helper:
     @staticmethod
-    def get_latest_top_url_directory(s3bucket, region_name='eu-west-1'):
+    def get_latest_directory(s3bucket, prefix='', region_name='eu-west-1'):
+        if prefix is None:
+            prefix = ''
         s3_client = boto3.client('s3', region_name=region_name)
-        response = s3_client.list_objects_v2(Bucket=s3bucket)
+        response = s3_client.list_objects_v2(Bucket=s3bucket, Prefix=prefix)
+        if 'Contents' not in response:
+            return None
         # Get the key of the object with the highest LastModified date
         latest_object = max(
             response['Contents'], key=lambda obj: obj['LastModified']
@@ -56,8 +60,10 @@ class S3Helper:
         )
 
     @staticmethod
-    def write_with_hash(bucket, file_path, writer_func, hash_check: bool=False):
-        with tempfile.NamedTemporaryFile() as map_file, tempfile.NamedTemporaryFile() as hash_file:
+    def write_with_hash(
+        bucket, file_path, writer_func, hash_check: bool = False
+    ):
+        with tmp() as map_file, tmp() as hash_file:
             writer_func(map_file.name)
             myhash = md5(map_file.name)
             if hash_check and S3Helper.__hash_check(bucket, file_path, myhash):
@@ -70,7 +76,7 @@ class S3Helper:
 
     @staticmethod
     def __hash_check(bucket, file_path, file_hash):
-        """ Returns true if hash has not changed """
+        """Returns true if hash has not changed"""
         # be agnostic whether file or its md5 file is in file_path
         file_path.rstrip(".md5")
         try:
@@ -84,15 +90,15 @@ class S3Helper:
 
     @staticmethod
     def hash_check(bucket, file_path, writer_func):
-        """ Returns true if hash of file on s3 has not changed """
-        with tempfile.NamedTemporaryFile() as map_file:
+        """Returns true if hash of file on s3 has not changed"""
+        with tmp() as map_file:
             writer_func(map_file.name)
             myhash = md5(map_file.name)
             return S3Helper.__hash_check(bucket, file_path, myhash)
 
     @staticmethod
     def write(bucket, file_path, writer_func):
-        with tempfile.NamedTemporaryFile() as map_file:
+        with tmp() as map_file:
             writer_func(map_file.name)
             S3Helper.__write(map_file.name, bucket, file_path)
 

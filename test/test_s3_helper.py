@@ -19,10 +19,22 @@ class TestS3Helper(unittest.TestCase):
             pytest.add_dummy_data(
                 'test', f'test/123456{idx}/{idx}.json', f'{idx}', mydate
             )
-        latest_directory = S3Helper.get_latest_top_url_directory(
-            'test', 'us-east-1'
+        latest_directory = S3Helper.get_latest_directory(
+            'test', '', 'us-east-1'
         )
         self.assertEqual(latest_directory, 'test/1234562')
+        for idx, mydate in enumerate(mydates):
+            pytest.add_dummy_data(
+                'test', f'newer/558{idx}/{idx}.json', f'{idx}', mydate
+            )
+        latest_directory = S3Helper.get_latest_directory(
+            'test', 'test', 'us-east-1'
+        )
+        self.assertEqual(latest_directory, 'test/1234562')
+        latest_directory = S3Helper.get_latest_directory(
+            'test', '', 'us-east-1'
+        )
+        self.assertEqual(latest_directory, 'newer/5582')
 
 
 if __name__ == '__main__':
