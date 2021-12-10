@@ -1,3 +1,4 @@
+import datetime as dt
 import json
 import os
 from tempfile import NamedTemporaryFile as tmp
@@ -113,6 +114,69 @@ class S3Helper:
         return data['Body'].read()
 
     @staticmethod
+    def download(bucket_name: str, key: str, destination: str):
+        """
+        Writes content of s3 object to file
+        If the file already exists it is overwritten
+
+        Args:
+            bucket_name (str): name of the s3 bucket
+            key (str): key of object in s3
+            destination (str): path of file
+
+        Returns:
+            None - content of object is written to file
+        """
+        s3 = boto3.resource('s3')
+        s3.Object(bucket_name, key).download_file(destination)
+
+    @staticmethod
+    def download_latest(
+            bucket_name: str,
+            key: str,
+            destination: str,
+            timestamp: dt.datetime
+    ) -> bool:
+        """
+        Writes content of s3 object to file, if age of object is younger than
+        timestamp
+
+        Args:
+            bucket_name (str): name of the s3 bucket
+            key (str): key of object in s3
+            destination (str): path of file
+            timestamp (datetime): timestamp against which the age of the
+                object is compared
+
+        Returns:
+            bool: whether file was written
+        """
+        if S3Helper.object_newer_than(bucket_name, key, timestamp):
+            S3Helper.download(bucket_name, key, destination)
+            return True
+        return False
+
+    @staticmethod
+    def object_newer_than(
+            bucket_name: str, key: str, timestamp: dt.datetime
+    ) -> bool:
+        """
+        Returns true if object on s3 is younger than timestamp, else false
+
+        Args:
+            bucket_name (str): name of the s3 bucket
+            key (str): key of object in s3
+            timestamp (int): timestamp against which the age of the object is
+                compared
+
+        Returns:
+            bool: True if object is younger, else false
+        """
+        s3 = boto3.resource('s3')
+        last_modified = s3.Object(bucket_name, key).last_modified
+        return last_modified > timestamp
+
+    @staticmethod
     def upload_filtered_directory(
         bucket, prefix, local_directory, extension, delete_existing
     ):
@@ -125,7 +189,7 @@ class S3Helper:
             local_directory (str): local directory
             extension (str): filter for local directory. If you want to upload only
             wheel packages set extension to .whl
-            delete (bool): deletes target directory if set to true
+            delete_existing (bool): deletes target directory if set to true
         """
         if not prefix.endswith('/'):
             raise AttributeError('Prefix must end with /')

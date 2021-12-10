@@ -36,6 +36,39 @@ class TestS3Helper(unittest.TestCase):
         )
         self.assertEqual(latest_directory, 'newer/5582')
 
+    @mock_s3
+    def test_object_newer_than_isnewer(self):
+        pytest.create_bucket('test')
+        pytest.add_dummy_data(
+            'test', 'test/file/jay.son', "test", pytest.get_date(0)
+        )
+        older_date = pytest.get_date(10)
+        self.assertTrue(S3Helper.object_newer_than(
+            "test", "test/file/jay.son", older_date
+        ))
+
+    @mock_s3
+    def test_object_newer_than_isolder(self):
+        pytest.create_bucket('test')
+        pytest.add_dummy_data(
+            'test', 'test/file/jay.son', "test", pytest.get_date(10)
+        )
+        older_date = pytest.get_date(0)
+        self.assertFalse(S3Helper.object_newer_than(
+            "test", "test/file/jay.son", older_date
+        ))
+
+    @mock_s3
+    def test_object_newer_than_sameage(self):
+        pytest.create_bucket('test')
+        pytest.add_dummy_data(
+            'test', 'test/file/jay.son', "test", pytest.get_date(0)
+        )
+        older_date = pytest.get_date(0)
+        self.assertFalse(S3Helper.object_newer_than(
+            "test", "test/file/jay.son", older_date
+        ))
+
 
 if __name__ == '__main__':
     unittest.main()
