@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.4 (2021-12-10)
+### Fix
+* Add download, download_latest, object_newer_than method ([`e45beb8`](https://github.com/emetriq/pytargetingutilities/commit/e45beb8f386bf5a1e7f72448901ec0d3657d5490))
+
 ## v1.0.3 (2021-12-07)
 ### Fix
 * Added prefix to get latest dir method ([`1ece9e9`](https://github.com/emetriq/pytargetingutilities/commit/1ece9e9db9c51252c7ef18532ceac19e8c06748f))
