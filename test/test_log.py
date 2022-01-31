@@ -10,12 +10,12 @@ class TestLog(unittest.TestCase):
         self.assertIsNotNone(logger)
         try:
             logger.info('test')
-        except:
+        except Exception:
             self.fail("logger.info raised Exception unexpectedly!")
 
         logger = setup_logging_graylog("test", logging.INFO, True, "", 0)
         self.assertIsNotNone(logger)
         try:
             logger.info('test')
-        except:
+        except Exception:
             self.fail("logger.info raised Exception unexpectedly!")
