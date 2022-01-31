@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2022-01-31)
+### Feature
+* Added regex tokenizer ([`1b729bc`](https://github.com/emetriq/pytargetingutilities/commit/1b729bce1a16cb23c3a2eed1c3881dafd81e5056))
+
 ## v1.0.4 (2021-12-10)
 ### Fix
 * Add download, download_latest, object_newer_than method ([`e45beb8`](https://github.com/emetriq/pytargetingutilities/commit/e45beb8f386bf5a1e7f72448901ec0d3657d5490))
