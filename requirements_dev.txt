@@ -6,5 +6,5 @@ pytest==7.0.1
 pytest-cov==3.0.0
 tox==3.24.5
 twine==3.8.0
-virtualenv==20.13.0
+virtualenv==20.16.1
 moto==3.0.6
